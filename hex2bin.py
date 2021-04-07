@@ -20,14 +20,14 @@ def get_input_file(file_name):
 
 def get_output_file(file_name):
     if os.path.isfile(file_name):
-        cont = input("The specified output file already exists, continue Y/N: ")
-        cont = cont.capitalize()
+        cont = input("The specified output file already exists, continue Y/N: ").capitalize()
         if cont.startswith("N"):
             sys.exit()
-    return open(file_name, "wb")
-
-def get_files(input_name, output_name):
-    return (get_input_file(input_name), get_output_file(output_name))
+    try:
+        return open(file_name, "wb")
+    except:
+        print(f"Couldn't create file at directory: {file_name}; please ensure this directory exists.")
+        sys.exit()
 
 def check_values(file):
     if len(file) % 2 != 0:
@@ -56,9 +56,13 @@ def parse_input(file_in):
 
 def main():
     (input_name, output_name) = get_command_args()
-    (input_file, output_file) = get_files(input_name, output_name)
+
+    input_file = get_input_file(input_name)
     data = parse_input(input_file.read())
+
+    output_file = get_output_file(output_name)
     output_file.write(data)
+    
     input_file.close()
     output_file.close()
 
